@@ -1,53 +1,47 @@
 import React, {Component} from 'react';
 import { Linking, Button, ScrollView } from 'react-native';
-import { DrawerNavigator, TabNavigator, StackNavigator, DrawerView, 
-         NavigationActions } from 'react-navigation';
+import { DrawerNavigator, TabNavigator, StackNavigator, DrawerView,
+         NavigationActions, StackRouter } from 'react-navigation';
 import { Icon, Tile, List } from 'react-native-elements';
 
 import HomeScreen from './Header';
 import AddScreen from './Add';
 import SettingScreen from './Setting';
-import CourseScreen from './Course';
+import CourseScreen from'./Course';
 import AccountScreen from './Account';
 import LoginScreen from './Login';
 import SignupScreen from './Signup';
 import AccountEditScreen from './AccountEdit';
 
-// export const LoginStack = StackNavigator(
-//   {
-//     LoginScreen: {
-//         screen: LoginScreen,
-//     },
-//     HomeStack: {
-//         screen: HomeStack,
-//     },
-//     SignupStack: {
-//         screen: SignupScreen,
-//     }
-// },
-// {
-//   headerMode: 'none' ,
-// }
-// );
+
+
+
+export const SignupStack = StackNavigator({
+  SignupScreen: {
+    screen: SignupScreen,
+    navigationOptions: {
+      header: ({ navigate }) => ({
+        title: '註冊',
+        left: (
+          <Icon
+            name='chevron-left'
+            iconStyle={{ marginLeft: 10 }}
+            onPress={() => navigate('LoginScreen')}
+          />
+        ),
+        style: ({ backgroundColor: '#a6e0d7' }),
+      })
+    },
+  },
+},
+  {
+    headerMode: 'screen',
+    headerStyle: (backgroundColor = '#a6e0d7')
+  }
+)
 
 export const HomeStack = StackNavigator(
 {
-  LoginScreen: {
-      screen: LoginScreen,
-      navigationOptions: {
-        header: () => ({
-          style: ({ display: 'none' }),
-        })
-    },
-  },
-  SignupScreen: {
-      screen: SignupScreen,
-      navigationOptions: {
-        header: () => ({
-          style: ({ display: 'none' }),
-        })
-    },
-  },
   Home: {
     screen: HomeScreen,
     navigationOptions: {
@@ -76,24 +70,36 @@ export const HomeStack = StackNavigator(
     navigationOptions: {
       header: ({ navigate }) => ({
         title: '新增課程',
+        style: ({ backgroundColor: '#a6e0d7' }),
+        tintColor: '#000000'
+      })
+    },
+  },
+  Course: {
+    screen: CourseScreen,
+    navigationOptions: {
+      header: ({ state }) => ({
+        title: `${state.params.name}`,
         right:(
           <Icon
-            name='done'
+            name='edit'
             iconStyle={{ marginRight : 10 }}
-            onPress={ () => navigate('Home') }
+
           />
         ),
-        style: ({ backgroundColor: '#a6e0d7' }),
+        style: ({ backgroundColor: '#a6e0d7', shadowColor: 'rgba(99,99,99,0)' }),
+        tintColor: '#000000'
       })
     },
   },
 
 },
 {
-  // headerMode: 'screen',
-    // headerStyle: (backgroundColor='#a6e0d7' )
+  headerMode: 'screen',
+  headerStyle: (backgroundColor='#a6e0d7' )
 }
 );
+
 
 export const SettingStack = StackNavigator({
   Setting: {
@@ -109,6 +115,7 @@ export const SettingStack = StackNavigator({
           />
         ),
         style: ({ backgroundColor: '#a6e0d7' }),
+        tintColor: '#000000'
       })
     },
   },
@@ -133,12 +140,13 @@ export const AccountStack = StackNavigator({
         ),
         right: (
           <Icon
-            name='mode-edit' 
+            name='mode-edit'
             iconStyle={{ marginRight: 10 }}
             onPress={() => navigate('AccountEdit')}
           />
         ),
         style: ({ backgroundColor: '#a6e0d7' }),
+        tintColor: '#000000'
       })
     },
   },
@@ -149,12 +157,13 @@ export const AccountStack = StackNavigator({
         title: '更新會員資料',
         // right: (
         //   <Icon
-        //     name='mode-edit' 
+        //     name='mode-edit'
         //     iconStyle={{ marginRight: 10 }}
         //     onPress={() => navigate('AccountEdit')}
         //   />
         // ),
         style: ({ backgroundColor: '#a6e0d7' }),
+        tintColor: '#000000'
       })
     },
   },
@@ -164,16 +173,24 @@ export const AccountStack = StackNavigator({
 }
 );
 
-
-
 export const DrawerRouter = DrawerNavigator(
   {
     HomeStack: {
       screen: HomeStack,
       navigationOptions: {
         drawer: {
-          label: '你的課表',
+          label: '我的課表',
           icon: ({ tintColor }) => <Icon name="view-list" size={25} color={tintColor} />
+        },
+      },
+    },
+
+    AccountStack: {
+      screen: AccountStack,
+      navigationOptions: {
+        drawer: {
+          label: '會員',
+          icon: ({ tintColor }) => <Icon name="person" size={25} color={tintColor} />
         },
       },
     },
@@ -188,26 +205,7 @@ export const DrawerRouter = DrawerNavigator(
       },
     },
 
-    AccountStack: {
-      screen: AccountStack,
-      navigationOptions: {
-        drawer: {
-          label: '會員',
-          icon: ({ tintColor }) => <Icon name="settings" size={25} color={tintColor} />
-        },
-      },  
-    },
-     
-  // LoginStack: {
-  //   screen: LoginStack,
-  //   navigationOptions: {
-  //       drawer: {
-  //         label: '登出',
-  //         icon: ({ tintColor }) => <Icon name="settings" size={25} color={tintColor} />
-  //       },
-  //     },  
-    
-  // }
+
   },
 
   {
@@ -215,20 +213,33 @@ export const DrawerRouter = DrawerNavigator(
     contentOptions: {
       activeTintColor: '#37bc9b',
     },
-    // drawerWidth: 200,
-    // drawerPosition: 'right',
-
-    contentComponent: 
+    contentComponent:
       props => (
         <ScrollView>
           <Tile
-            imageSrc={require('./assets/drawerBG.jpeg')}
+            imageSrc={require('./assets/userImg.jpg')}
+            title={props.Account}
             featured
           />
           <DrawerView.Items {...props} />
         </ScrollView>
       )
-  }
+  },
 );
 
-
+export const LoginStack = StackNavigator(
+  {
+    LoginScreen: {
+      screen: LoginScreen,
+    },
+    SignupStack: {
+      screen: SignupStack,
+    },
+    Home: {
+      screen: DrawerRouter,
+    }
+  },
+  {
+    headerMode: 'none',
+  }
+);

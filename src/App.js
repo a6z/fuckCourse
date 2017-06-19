@@ -1,6 +1,6 @@
 
 import React, {Component} from 'react';
-import { DrawerRouter } from './Router';
+import { LoginStack } from './Router';
 import * as firebase from 'firebase';
 
 
@@ -8,18 +8,20 @@ class App extends Component {
   
 componentWillMount() {
     firebase.initializeApp({
-      apiKey: "AIzaSyBjNFf-bzV4OP_h2k2IOz2GsqEvgsjCMhg",
-      authDomain: "app-wk12.firebaseapp.com",
-      databaseURL: "https://app-wk12.firebaseio.com",
-      projectId: "app-wk12",
-      storageBucket: "app-wk12.appspot.com",
-      messagingSenderId: "135531379667"
-    });
+      apiKey: "AIzaSyApNR8rculjarLRkoN8n3iMtXcU16M47c0",
+      authDomain: "coursedata-4575c.firebaseapp.com",
+      databaseURL: "https://coursedata-4575c.firebaseio.com",
+      projectId: "coursedata-4575c",
+      storageBucket: "coursedata-4575c.appspot.com",
+      messagingSenderId: "265681481974"
+    })
+    
+
   }
-  
+ 
   render() {
       return(
-            <DrawerRouter />
+            <LoginStack />
       );
   }      
 }

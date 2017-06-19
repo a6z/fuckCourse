@@ -1,32 +1,32 @@
-// import React, { Component } from 'react';
-// import { View, StyleSheet } from 'react-native';
-
-// import Content from './Content';
-// import TabRouter from './TabBar';
-/*
-class Course extends Component {
-  render() {
-    return (
-      <View>
-        <TabRouter />
-         <Content />
-      </View>
-    );
-  }
-}*/
-
-// export default Course;
-
 import React from 'react';
-import { TabRouter } from './TabBar';
+// import { TabNavigator, StackNavigator } from 'react-navigation';
+import { ContentScreen } from './Content';
+import { TabRouter } from './Content';
+import Tabs from 'react-native-tabs';
 
+const CourseScreen = (props) => {
+    const {
+      name,
+      description,
+      teacher,
+      room,
+      day,
+      startTime,
+      endTime,
+      credit,
+    } = props.navigation.state.params;
+    return(
+      <ContentScreen 
+        name={name}
+        description={description}
+        teacher={teacher}
+        credit={credit}
+        room={room}
+        day={day}
+        startTime={startTime}
+        endTime={endTime}
+      />
+    )
+};
 
-const Course = () => (
-  
-      <TabRouter />
-  
-   );
-
-export default Course;
-
-
+export default CourseScreen;

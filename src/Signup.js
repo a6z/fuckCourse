@@ -5,6 +5,8 @@ import { Icon, FormLabel, FormInput, FormValidationMessage, Button, Text } from 
 import { Facebook } from 'expo';
 import ModalPicker from 'react-native-modal-picker';
 
+import FBButton from './components/fbbutton';
+
 // Make a component
 class Signup extends Component {
   state = {
@@ -12,167 +14,100 @@ class Signup extends Component {
     password: null,
     username: null,
     school: '',
-    department: '',    
+    department: '',
     course: '',
     error: ' ',
     loading: false,
     saving: false,
-    showSpinner: false,
-    token: null,
-    status: 'Not Login...',
-    
-  };
-
-  facebookLogin = async () => {
-    console.log('Testing token....');
-    let token = await AsyncStorage.getItem('fb_token');
-
-    if (token) {
-      console.log('Already having a token...');
-      this.setState({ token });
-
-      const response = await fetch(
-        `https://graph.facebook.com/me?access_token=${token}`);
-      this.setState({ status: `Hello ${(await response.json()).name}` });
-      console.log(response);
-
-    } else {
-      console.log('DO NOT having a token...');
-      this.doFacebookLogin();
-    }
-  };
-
-  doFacebookLogin = async () => {
-    let { type, token } = await Facebook.logInWithReadPermissionsAsync(
-      '1184175101694797',
-      {
-        permissions: ['public_profile'],
-        behavior: 'web'
-      });
-
-    if (type === 'cancel') {
-      console.log('Login Fail!!');
-      return;
-    }
-
-    await AsyncStorage.setItem('fb_token', token);
-    this.setState({ token });
-    const response = await fetch(
-      `https://graph.facebook.com/me?access_token=${token}`);
-    this.setState({ status: `Hello ${(await response.json()).name}` });
-    console.log(response);
-    const credential = firebase.auth.FacebookAuthProvider.credential(token);
-
-    // Sign in with credential from the Facebook user.
-    try {
-      await firebase.auth().signInWithCredential(credential);
-      const { currentUser } = await firebase.auth();
-      console.log(`currentUser = ${currentUser.uid}`);
-      this.props.navigation.navigate('Home');
-    } catch (err) {
-
-    }
   };
 
   onSaveInfo = async () => {
-    
     const { currentUser } = firebase.auth();
     const { email, username, school, department, course } = this.state;
     let dbUserid = firebase.database().ref(`/users/${currentUser.uid}`);
     await dbUserid.set({  username, email, school, department, course });
-
-    console.log('check the saving funcrtion~~~~~~~~');
+    console.log('check the saving function~~~~~~~~');
   }
 
   onCreateUser = async () => {
     const { email, password } = this.state;
-    this.setState({ saving: true });
+    this.setState({ loading: true , error: ' '});
     try {
-
       await firebase.auth().createUserWithEmailAndPassword(email, password);
       const { currentUser } = firebase.auth();
       let dbUserid = firebase.database().ref(`/users/${currentUser.uid}`);
       await dbUserid.set({  username: "", email: "", school: "", department: "", course: "", });
-      
-      try{ 
-        this.onSaveInfo();
-      } catch (err){
-        console.log('saving fail!!!!!!!!!!!');
-      }
+      await firebase.auth().signInWithEmailAndPassword(email, password);
       this.setState({ saving: false });
+      this.onSaveInfo();
       this.props.navigation.navigate('Home');
     } catch (err) {
       this.setState({
-        email: '',
-        password: '',
-        username: null,        
         error: err.message,
         loading: false,
-        showModal: false
       });
+      console.log(this.state.error);
     }
   }
 
+
   renderButton() {
-    if (this.state.saving) {
+    if (this.state.loading) {
       return <ActivityIndicator size='small' />;
     }
 
     return (
       <Button
-        title='Sign up'
-        backgroundColor='#4AAF4C'
-        onPress={this.onCreateUser}
+        title='註冊'
+        backgroundColor='#F29019'
+        buttonStyle={{ borderRadius: 10 }}
+        onPress={() => this.onCreateUser()}
         style={styles.signupBtn}
       />
     );
   }
 
-  async componentDidMount() {
-    await AsyncStorage.removeItem('fb_token');
-  }
-
   render() {
     let index = 0;
-        const schoolData = [
-            // { key: index++, section: true, label: 'Fruits' },
-            { key: index++, label: '國立台灣大學' },
-            { key: index++, label: '國立台北教育大學' },
-            { key: index++, label: '國立清華大學' },
-            { key: index++, label: '國立交通大學' },
-            { key: index++, label: '國立政治大學' },
-            // { key: index++, section: true, label: 'Vegetables' },
-            { key: index++, label: '國立臺北大學' },
-            { key: index++, label: '亞洲大學' },
-            { key: index++, label: '東海大學' },
-            { key: index++, label: '世新大學' },
-            { key: index++, label: '中國文化大學' },
-            { key: index++, label: '天主教輔仁大學' },
-            { key: index++, label: '東吳大學' },
-            { key: index++, label: '僑光科技大學' }
-        ];
+    const schoolData = [
+      // { key: index++, section: true, label: 'Fruits' },
+      { key: index++, label: '國立台灣大學' },
+      { key: index++, label: '國立台北教育大學' },
+      { key: index++, label: '國立清華大學' },
+      { key: index++, label: '國立交通大學' },
+      { key: index++, label: '國立政治大學' },
+      // { key: index++, section: true, label: 'Vegetables' },
+      { key: index++, label: '國立臺北大學' },
+      { key: index++, label: '亞洲大學' },
+      { key: index++, label: '東海大學' },
+      { key: index++, label: '世新大學' },
+      { key: index++, label: '中國文化大學' },
+      { key: index++, label: '天主教輔仁大學' },
+      { key: index++, label: '東吳大學' },
+      { key: index++, label: '僑光科技大學' }
+    ];
 
-        const departmentData = [
-            // { key: index++, section: true, label: 'Fruits' },
-            { key: index++, label: '數位科技設計系' },
-            { key: index++, label: '教育學系' },
-            { key: index++, label: '兒童與英語教育學系' },
-            { key: index++, label: '資訊科學系' },
-            { key: index++, label: '自然科學教育學系' },
-            // { key: index++, section: true, label: 'Vegetables' },
-            { key: index++, label: '教育與經營管理學系' },
-        ];
- 
+    const departmentData = [
+      // { key: index++, section: true, label: 'Fruits' },
+      { key: index++, label: '數位科技設計系' },
+      { key: index++, label: '教育學系' },
+      { key: index++, label: '兒童與英語教育學系' },
+      { key: index++, label: '資訊科學系' },
+      { key: index++, label: '自然科學教育學系' },
+      // { key: index++, section: true, label: 'Vegetables' },
+      { key: index++, label: '教育與經營管理學系' },
+    ];
+
     console.log(this.state);
     return (
       <View style={styles.signupLayout}>
-  
+
         <View style={styles.formStyle}>
           <FormLabel labelStyle={styles.formLabel}>姓名</FormLabel>
           <FormInput
             containerStyle={styles.formBorder}
             inputStyle={styles.formInput}
-            placeholder='Your name'
+            placeholder='輸入姓名'
             autoCorrect={false}
             value={this.state.username}
             onChangeText={username => this.setState({ username })}
@@ -181,7 +116,7 @@ class Signup extends Component {
           <FormInput
             containerStyle={styles.formBorder}
             inputStyle={styles.formInput}
-            placeholder='user@email.com'
+            placeholder='信箱即為帳號'
             autoCorrect={false}
             autoCapitalize='none'
             keyboardType='email-address'
@@ -195,58 +130,54 @@ class Signup extends Component {
             secureTextEntry
             autoCorrect={false}
             autoCapitalize='none'
-            placeholder='password'
+            placeholder='至少6位英文/數字'
             value={this.state.password}
             onChangeText={password => this.setState({ password })}
           />
-          <FormLabel labelStyle={styles.formLabel}>學校</FormLabel>
+        </View>
+        {/*<FormLabel labelStyle={styles.formLabel}>學校</FormLabel>*/}
+        <View style={styles.pickerContainer}>
           <ModalPicker
-              data={schoolData}
-              initValue=""
-              onChange={(option)=>{ this.setState({school:option.label})}}
-              style={styles.modalPicker} >
-              
-              <TextInput
-                  style={styles.pickerInput}
-                  editable={false}
-                  placeholder="選擇你就讀的學校"
-                  value={this.state.school} 
-              />
-              <Icon 
-                name='arrow-drop-down'
-                style={styles.dropDownIcon}
-              />                     
+            data={schoolData}
+            initValue=""
+            onChange={(option) => { this.setState({ school: option.label }) }}
+            style={styles.modalPicker} >
+
+            <TextInput
+              style={styles.pickerInput}
+              editable={false}
+              placeholder="選擇你就讀的學校"
+              value={this.state.school}
+            />
+            {/*<Icon
+              name='arrow-drop-down'
+              style={styles.dropDownIcon}
+            />*/}
           </ModalPicker>
 
-          <FormLabel labelStyle={styles.formLabel}>科系</FormLabel>      
+          {/*<FormLabel labelStyle={styles.formLabel}>科系</FormLabel>*/}
           <ModalPicker
-              data={departmentData}
-              initValue=""
-              onChange={(option)=>{ this.setState({department:option.label})}}
-              style={styles.modalPicker} >
-              
-              <TextInput
-                  style={styles.pickerInput}
-                  editable={false}
-                  placeholder="選擇你就讀的科系"
-                  value={this.state.department}                   
-              />             
-              <Icon 
-                name='arrow-drop-down'
-                style={styles.dropDownIcon}
-              />     
-          </ModalPicker>    
-          {this.renderButton()}
-          <FormValidationMessage>{this.state.error}</FormValidationMessage>
+            data={departmentData}
+            initValue=""
+            onChange={(option) => { this.setState({ department: option.label }) }}
+            style={styles.modalPicker} >
+
+            <TextInput
+              style={styles.pickerInput}
+              editable={false}
+              placeholder="選擇你就讀的科系"
+              value={this.state.department}
+            />
+            {/*<Icon
+              name='arrow-drop-down'
+              style={styles.dropDownIcon}
+            />*/}
+          </ModalPicker>
         </View>
-        <View style={styles.formStyle}>
-          <Button
-            title='Sign up with Facebook'
-            backgroundColor='#39579A'
-            onPress={this.facebookLogin}
-            style={{ marginTop: -60 }}
-          />
-        </View>
+        <FormValidationMessage labelStyle={{fontSize: 10}} >{this.state.error}</FormValidationMessage>
+        {this.renderButton()}
+        <FBButton navigation={this.props.navigation} />
+
       </View>
     );
   }
@@ -254,49 +185,53 @@ class Signup extends Component {
 
 const styles = {
   signupLayout: {
-    // backgroundColor:'#a6e0d750',
+    marginTop: -30,
+    // paddingLeft: 20,
+    // paddingRight: 20,
   },
   formStyle: {
     marginTop: 50,
     // flex: 1,
   },
   formLabel: {
+    fontSize: 13,
     color: '#37bc9b',
   },
   formBorder: {
     borderBottomColor: '#37bc9b',
   },
   formInput: {
-    color:'#000'
+    color: '#000',
+    fontSize: 15
+  },
+  pickerContainer: {
+    justifyContent:'space-around',
+    marginTop: 30,
   },
   modalPicker: {
-    // flexDirection: 'row',
-    justifyContent:'center',
-    // alignItems: 'flex-start',
-    // backgroundColor: 'gray',
-    marginLeft:15,
-    marginRight:15,
-    // marginBottom:15,
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#B5B5B5',
+    borderRadius: 5,
+    marginTop: 20,
+    marginRight: 20,
+    marginLeft: 20,
   },
   pickerInput: {
-    borderWidth:1,
-    borderColor: '#37bc9b',
+    //backgroundColor: '#86A397',
     // borderColor:'#ccc', 
-    padding:10, 
-    height:30, 
-    width:345, 
-    marginRight:'auto', 
-    marginLeft:'auto', 
-    marginTop:10,
-    marginBottom:10
+    fontSize: 15,
+    alignItems: 'center',
+    color: 'black',
+    padding: 25
   },
-  dropDownIcon: {
-    position: 'absolute',
-    backgroundColor:'red',
-    top: 13,
-    right: 5,
-    // alignSelf:'center',
-  },
+  // dropDownIcon: {
+  //   position: 'absolute',
+  //   backgroundColor: 'red',
+  //   top: 13,
+  //   right: 5,
+  //   // alignSelf:'center',
+  // },
   signupBtn: {
     marginTop: 30,
 

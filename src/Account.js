@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import * as firebase from 'firebase';
 import { ScrollView, View, Text, StyleSheet, PixelRatio, Image } from 'react-native';
 import { Avatar, List, ListItem, Button, Icon, Tile } from 'react-native-elements';
+import Dimensions from 'Dimensions';
+
 
 class Account extends Component {
   state = {
@@ -41,20 +43,23 @@ class Account extends Component {
 
 render() {
   const { goBack } = this.props.navigation;
-  const { userImg, user, userText, listItemTitle } = styles;
+  const { userImg, userText, listItemTitle } = styles;
   return (
       <ScrollView>
         <Tile
-            imageSrc={require('./assets/drawerBG.jpeg')}
-            featured
+            imageSrc={require('./assets/userBG.png')}            
+            
         />
-        <View style={user}>
+        <View style={{ position: 'absolute', left: (0.5 * Dimensions.get('window').width - 75), top: 40,
+                       justifyContent: 'center'}}>
           <Image 
             style={userImg}
             source={require('./assets/userImg.jpg')} 
           />     
+          <View>
             <Text style={userText}>{this.state.username}</Text>
             <Text style={userText}>{this.state.school} {this.state.department}</Text>  
+          </View>
         </View>
         <List>
           <ListItem
@@ -121,20 +126,18 @@ const styles = StyleSheet.create({
     marginTop: 50,
     width: 400,
   },
-  user: {
-    position: 'absolute',
-    top: 60,
-    left: 100,
-  },
   userImg: {
-    borderRadius: 75,
-    width: 150,
-    height: 150,
+    borderRadius: 37.5 * PixelRatio.get(),
+    width: 75 * PixelRatio.get(),
+    height: 75 * PixelRatio.get(),
+    marginLeft: 'auto',
+    marginRight: 'auto',
   },
   userText: {
     backgroundColor: 'rgba(99,99,99,0)',
     textAlign: 'center',
     color: '#ffffff',
+    marginTop: 10
   },
   listItemTitle: {
     color: '#39b293',

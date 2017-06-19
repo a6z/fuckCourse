@@ -1,12 +1,9 @@
-import * as firebase from 'firebase';
 import React, { Component } from 'react';
-import { View, ActivityIndicator, AsyncStorage, StatusBar } from 'react-native';
-
+import { TouchableOpacity, View, ActivityIndicator, AsyncStorage, StatusBar, Image } from 'react-native';
+import FBButton from './components/fbbutton';
 import { FormLabel, FormInput, FormValidationMessage, Button, Text } from 'react-native-elements';
 import { Facebook } from 'expo';
-
-// import Confirm from '../components/Confirm';
-// import Spinner from '../components/Spinner';
+import * as firebase from 'firebase';
 
 // Make a component
 class LoginScreen extends Component {
@@ -15,159 +12,105 @@ class LoginScreen extends Component {
     password: null,
     error: ' ',
     loading: false,
-    showModal: false,
-    showSpinner: false,
-    token: null,
-    status: 'Not Login...'
-  };
-
-  facebookLogin = async () => {
-    console.log('Testing token....');
-    let token = await AsyncStorage.getItem('fb_token');
-
-    if (token) {
-      console.log('Already having a token...');
-      this.setState({ token });
-
-      const response = await fetch(
-        `https://graph.facebook.com/me?access_token=${token}`);
-      this.setState({ status: `Hello ${(await response.json()).name}` });
-      console.log(response);
-
-    } else {
-      console.log('DO NOT having a token...');
-      this.doFacebookLogin();
-    }
-  };
-
-  doFacebookLogin = async () => {
-    let { type, token } = await Facebook.logInWithReadPermissionsAsync(
-      '1184175101694797',
-      {
-        permissions: ['public_profile'],
-        behavior: 'web'
-      });
-
-    if (type === 'cancel') {
-      console.log('Login Fail!!');
-      return;
-    }
-
-    await AsyncStorage.setItem('fb_token', token);
-    this.setState({ token });
-    const response = await fetch(
-      `https://graph.facebook.com/me?access_token=${token}`);
-    this.setState({ status: `Hello ${(await response.json()).name}` });
-    console.log(response);
-    const credential = firebase.auth.FacebookAuthProvider.credential(token);
-
-    // Sign in with credential from the Facebook user.
-    try {
-      await firebase.auth().signInWithCredential(credential);
-      const { currentUser } = await firebase.auth();
-      console.log(`currentUser = ${currentUser.uid}`);
-      this.props.navigation.navigate('Home');
-    } catch (err) {
-
-    }
   };
 
   onSignIn = async () => {
     const { email, password } = this.state;
     this.setState({ error: ' ', loading: true });
     try {
+      console.log('start sign-in');
       await firebase.auth().signInWithEmailAndPassword(email, password);
+      console.log('sign-in succese!');
       this.props.navigation.navigate('Home');
+
     } catch (err) {
-      // this.setState({ showModal: true });
-      this.setState({ error: 'The account do not exist, you can press the NEW USER to join us ', loading: false });
-      return(this.state.error);
+      this.setState({ error: err.message , loading: false });
+      console.log(this.state.error);
+      return (this.state.error);
     }
   }
 
-  onCreateUser = async () => {
+  goToNewScreen = async () => {
 
-    try {
     this.setState({
-      email: '',
-      password: '',
-      error: '',
-      loading: false,
-      showModal: false,
-      showSpinner: true
+        email: '',
+        password: '',
+        error: '',
+        loading: false,
     });
-      this.props.navigation.navigate('SignupScreen');
-    } catch (err) {}
-  }
-
-  onCLoseModal = () => {
-    this.setState({
-      email: '',
-      password: '',
-      error: '',
-      loading: false,
-      showModal: false
-    });
+    this.props.navigation.navigate('SignupStack');
   }
 
   renderButton() {
     if (this.state.loading) {
-      return <ActivityIndicator size='small' style={{ marginTop: 30 }} />;
+      return (<ActivityIndicator size='small' />);
     }
 
     return (
       <Button
-        title='Sign in'
+        title='登入'
         backgroundColor='#4AAF4C'
-        onPress={this.onSignIn}
+        buttonStyle={{ borderRadius: 10 }}
+        onPress={() => this.onSignIn()}
       />
     );
   }
-  async componentDidMount() {
-    await AsyncStorage.removeItem('fb_token');
-  }
+
 
   render() {
     return (
       <View>
-        
+        <View style={styles.backgroundPath}>
+          <Image source={require('./assets/Path 1.png')} />
+        </View>
         <View style={styles.formStyle}>
-          <FormLabel>Email</FormLabel>
-          <FormInput
-            placeholder='user@email.com'
-            autoCorrect={false}
-            autoCapitalize='none'
-            keyboardType='email-address'
-            value={this.state.email}
-            onChangeText={email => this.setState({ email })}
-          />
-          <FormLabel>Password</FormLabel>
-          <FormInput
-            secureTextEntry
-            autoCorrect={false}
-            autoCapitalize='none'
-            placeholder='password'
-            value={this.state.password}
-            onChangeText={password => this.setState({ password })}
-          />
+          <View style={{ alignItems: 'center', marginBottom: 30 }}>
+            <Image style={{ width: 100, height: 100, marginBottom: 5 }} source={require('../assets/icons/app.png')} />
+            <Image style={{ marginBottom: 8 }} source={require('./assets/logoWord.png')} />
+            <Image source={require('./assets/logoWord_down.png')} />
+          </View>
+          <View style={styles.inputRowStyle}>
+            <View
+              style={{ width: 30, alignItems: 'center', justifyContent: 'center' }}>
+              <Image style={{ width: 24, height: 24 }} source={require('./assets/man.png')} />
+            </View>
+            <FormInput
+              containerStyle={{ width: 250, marginLeft: 5, borderBottomWidth: 0 }}
+              inputStyle={{ fontSize: 15 }}
+              placeholder='輸入信箱'
+              autoCorrect={false}
+              autoCapitalize='none'
+              keyboardType='email-address'
+              value={this.state.email}
+              onChangeText={email => this.setState({ email })}
+            />
+          </View>
+
+          <View style={styles.inputRowStyle}>
+            <View
+              style={{ width: 30, alignItems: 'center', justifyContent: 'center' }}>
+              <Image style={{ width: 24, height: 24 }} source={require('./assets/locked.png')} />
+            </View>
+            <FormInput
+              containerStyle={{ width: 250, marginLeft: 5, borderBottomWidth: 0 }}
+              inputStyle={{ fontSize: 15 }}
+              secureTextEntry
+              autoCorrect={false}
+              autoCapitalize='none'
+              placeholder='輸入密碼'
+              value={this.state.password}
+              onChangeText={password => this.setState({ password })}
+            />
+          </View>
+          <FormValidationMessage labelStyle={{fontSize: 10}} >{this.state.error}</FormValidationMessage>
+        </View>
+        <View style={styles.buttonContainer}>
           {this.renderButton()}
-          <FormValidationMessage>{this.state.error}</FormValidationMessage>
+          <FBButton navigation={this.props.navigation} />
+          <TouchableOpacity style={styles.textStyle} onPress={() => this.goToNewScreen()}>
+            <Text style={{ color: '#747474', fontSize: 12, textDecorationLine: 'underline' }}>還沒註冊？</Text>
+          </TouchableOpacity>
         </View>
-        <View style={styles.formStyle}>
-          <Button
-            title='Sign in with Facebook'
-            backgroundColor='#39579A'
-            onPress={this.facebookLogin}
-          />
-        </View>
-    
-        <Button
-            title='New User?'
-            color='#000000'
-            textStyle={{ textDecorationLine: 'underline' }}
-            backgroundColor='#e9e9ef'
-            onPress={this.onCreateUser}
-          />
       </View>
     );
   }
@@ -175,8 +118,32 @@ class LoginScreen extends Component {
 
 const styles = {
   formStyle: {
-    marginTop: 150
+    marginTop: 200,
+    paddingLeft: 40,
+    paddingRight: 40,
+    
+
+  },
+  inputRowStyle: {
+    marginTop: 5,
+    marginBottom: 5,
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderColor: '#ababab'
+  },
+  buttonContainer: {
+    padding: 20,
+    paddingTop: 15
+  },
+  textStyle: {
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  backgroundPath: {
+    position: 'absolute',
+    zIndex: -11,
   }
+
 };
 
 export default LoginScreen;

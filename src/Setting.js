@@ -6,7 +6,7 @@ import { List, ListItem } from 'react-native-elements';
 const Setting = () => {
   return (
     <ScrollView>
-      <List containerStyle={{ marginBottom: 30 }}>
+      <List containerStyle={{ marginBottom: 20 }}>
         <ListItem
           title="星期"
         />
@@ -15,6 +15,14 @@ const Setting = () => {
         />
         <ListItem
           title="每節課的上課時間"
+        />
+      </List>
+      <List containerStyle={{ marginBottom: 20 }}>
+        <ListItem
+          title="更改密碼"
+        />
+        <ListItem
+          title="更換大頭照"
         />
       </List>
       <List>
