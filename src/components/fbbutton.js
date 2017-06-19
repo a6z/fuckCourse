@@ -32,7 +32,7 @@ class FBButton extends Component {
 
   doFacebookLogin = async () => {
     let { type, token } = await Facebook.logInWithReadPermissionsAsync(
-      '1184175101694797',
+      '1516062511771406',
       {
         permissions: ['public_profile'],
         behavior: 'web'
