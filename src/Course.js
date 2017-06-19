@@ -1,8 +1,8 @@
 import React from 'react';
 // import { TabNavigator, StackNavigator } from 'react-navigation';
-import { ContentScreen } from './Content';
-import { TabRouter } from './Content';
-import Tabs from 'react-native-tabs';
+// import { ContentScreen } from './Content';
+import { Tabs } from './Content';
+// import Tabs from 'react-native-tabs';
 
 const CourseScreen = (props) => {
     const {
@@ -16,7 +16,7 @@ const CourseScreen = (props) => {
       credit,
     } = props.navigation.state.params;
     return(
-      <ContentScreen 
+      <Tabs
         name={name}
         description={description}
         teacher={teacher}
