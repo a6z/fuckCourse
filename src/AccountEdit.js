@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { View, Picker, ActivityIndicator, StatusBar, TextInput } from 'react-native';
 import * as firebase from 'firebase';
-// import { FormLabel, FormInput, Button, CheckBox } from 'react-native-elements';
 import { Icon, FormLabel, FormInput, FormValidationMessage, Button, Text } from 'react-native-elements';
 import ModalPicker from 'react-native-modal-picker';
 
@@ -81,14 +80,18 @@ class SettingScreen extends Component {
         ];
 
         const departmentData = [
-            // { key: index++, section: true, label: 'Fruits' },
             { key: index++, label: '數位科技設計系' },
             { key: index++, label: '教育學系' },
             { key: index++, label: '兒童與英語教育學系' },
             { key: index++, label: '資訊科學系' },
             { key: index++, label: '自然科學教育學系' },
-            // { key: index++, section: true, label: 'Vegetables' },
             { key: index++, label: '教育與經營管理學系' },
+            { key: index++, label: '數資暨資訊教育學系' },
+            { key: index++, label: '音樂學系' },
+            { key: index++, label: '體育學系' },
+            { key: index++, label: '語文與創作學系' },
+            { key: index++, label: '藝術造形設計學系' },
+            { key: index++, label: '社會與區域發展學系' },
         ];
     console.log(this.state);
     return (
