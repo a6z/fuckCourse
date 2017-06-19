@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { List, ListItem, Icon, Button } from 'react-native-elements';
+import CourseInfoEdit from './CourseInfoEdit';
 
 class CourseInfo extends Component {
 
@@ -52,6 +53,7 @@ render() {
               hideChevron
             />
           </List>
+
         </View>
         
       

@@ -5,7 +5,7 @@ import { Icon, FormLabel, FormInput, FormValidationMessage, Button, Text } from 
 import ModalPicker from 'react-native-modal-picker';
 
 // Make a component
-class SettingScreen extends Component {
+class AccountEdit extends Component {
     // static navigationOptions = ({ navigation, screenProps }) => ({
     //     title: '更新會員資料',
     //     style: ({ backgroundColor: '#a6e0d7' }),
@@ -95,8 +95,7 @@ class SettingScreen extends Component {
         ];
     console.log(this.state);
     return (
-      <View style={styles.formStyle}>
-        <StatusBar barStyle='light-content' />        
+      <View style={styles.formStyle}> 
           <FormLabel labelStyle={styles.formLabel}>姓名</FormLabel>
           <FormInput
             containerStyle={styles.formBorder}
@@ -214,4 +213,4 @@ const styles = {
 };
 
 
-export default SettingScreen;
+export default AccountEdit;

@@ -17,6 +17,7 @@ class Add extends Component {
     endTime: null,
     room: null,
     key: null,
+    typingKeyWord: '',
    };
 
   componentWillMount() {
@@ -78,12 +79,57 @@ onSearch = async (keyword) => {
     typingKeyWord: keyword,
   })
 
-    if(this.state.typingKeyWord === null){
+    if(this.state.typingKeyWord === ''){
       this.setState({
-        courses: [],
-    
-  })
+        courses,
+      })
     }
+    if(this.state.typingKeyWord === '行'){
+      this.setState({
+        courses: [
+          {
+              "courseName": "行動程式設計",
+              "description": "大二選修",
+              "teacher": "俞齊山",
+              "credit": "2",
+              "day": "二",
+              "startTime": "08:10",
+              "endTime": "11:10",
+              "room": "B403",
+              "key": "course2"
+          },
+        ]
+      })
+    }
+    if(this.state.typingKeyWord === '程式'){
+      this.setState({
+        courses: [
+          {
+              "courseName": "行動程式設計",
+              "description": "大二選修",
+              "teacher": "俞齊山",
+              "credit": "2",
+              "day": "二",
+              "startTime": "08:10",
+              "endTime": "11:10",
+              "room": "B403",
+              "key": "course2"
+          },
+          {
+              "courseName": "程式設計",
+              "description": "大一必修",
+              "teacher": "王學武",
+              "credit": "3",
+              "day": "三",
+              "startTime": "13:30",
+              "endTime": "16:40",
+              "room": "F505",
+              "key": "course7"
+          },
+        ]
+      })
+    }
+    
 
 }
 

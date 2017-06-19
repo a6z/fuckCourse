@@ -12,6 +12,7 @@ import AccountScreen from './Account';
 import LoginScreen from './Login';
 import SignupScreen from './Signup';
 import AccountEditScreen from './AccountEdit';
+import CourseInfoEditScreen from './CourseInfoEdit'
 
 
 
@@ -78,13 +79,13 @@ export const HomeStack = StackNavigator(
   Course: {
     screen: CourseScreen,
     navigationOptions: {
-      header: ({ state }) => ({
+      header: ({ state, navigate }) => ({
         title: `${state.params.name}`,
         right:(
           <Icon
             name='edit'
             iconStyle={{ marginRight : 10 }}
-
+            /*onPress={ () => navigate('CourseInfoEdit') }*/
           />
         ),
         style: ({ backgroundColor: '#a6e0d7', shadowColor: 'rgba(99,99,99,0)' }),
@@ -92,6 +93,9 @@ export const HomeStack = StackNavigator(
       })
     },
   },
+  CourseInfoEdit: {
+    screen: CourseInfoEditScreen,
+  }
 
 },
 {

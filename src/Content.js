@@ -8,7 +8,6 @@ import ScrollableTabView, { ScrollableTabBar } from 'react-native-scrollable-tab
 import CourseInfo from './CourseInfo';
 import ToDoList from './ToDoList';
 
-
 export class Tabs extends Component {
   render() {
     return (
